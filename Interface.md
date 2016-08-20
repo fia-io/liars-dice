@@ -35,18 +35,12 @@
   
   __Rules:__
      - Returns error if only 1 player has joined the game.
-<<<<<<< HEAD
-     - Client may enforce if only player 1 can call start_game
-=======
      - Client may enforce whether only player 1 can call start_game
->>>>>>> 65ff609e8214afd208ac1f8980f419071820c678
      
 
 ###roll_dice
   - IN: player_name, game_id
   - OUT: dice(), game_id, player_name
-<<<<<<< HEAD
-=======
   
 __Rules:__
      - Returns error if this player has already rolled this round
@@ -61,11 +55,13 @@ __Rules:__
      - bids() contains current bids for other players
 
 ###bid
-  - IN: game_id, player_name, bid_die, bid_count
+  - IN: game_id, round_number, player_name, bid_count, bid_die
+    - Example: {"game_id": 5, "round_number": 8, "player_name": "me", "bid_count": 3, "bid_die": 6 }
   - OUT: game_id, game_status, round_number, player_turn(bool=false), dice(), bids()
 
 __Rules:__
      - Returns error if not player_name's turn
+     - Returns error bid is not allowable
      - Return is otherwise the same as game_status
      
 ###challenge
@@ -77,4 +73,3 @@ __Rules:__
      - Return is otherwise the same as game_status
   
 
->>>>>>> 65ff609e8214afd208ac1f8980f419071820c678
