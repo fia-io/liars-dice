@@ -6,6 +6,28 @@ app = flask.Flask(__name__)
 def hello():
     return "Hello World!"
 
+@app.route('/play/game_status', methods=['GET','POST'])
+def game_status():
+    response = {}
+    print(str(flask.request.json))
+    print(str(flask.request.get_json()))
+    if flask.request.json:
+        request_data = flask.request.json
+        response['game_id'] = request_data.get('game_id')
+
+    print(str(response))
+    return flask.jsonify(**response)
+
+@app.route('/play/bid', methods=['POST'])
+def bid():
+    return 'I should totally return a bid here.'
+
+@app.route('/play/challenge', methods=['POST'])
+def challenge():
+    return 'I should totally return a challenge here.'
+
+
+
 @app.route('/js/<path:path>')
 def send_js(path):
     return flask.send_from_directory('js', path)
