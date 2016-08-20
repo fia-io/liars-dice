@@ -6,6 +6,10 @@ app = flask.Flask(__name__)
 def hello():
     return "Hello World!"
     
+@app.route('/js/<path:path>')
+def send_js(path):
+    return flask.send_from_directory('js', path)
+
 @app.route("/base")
 def base_template():
     return flask.render_template('base.html')
