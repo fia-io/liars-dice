@@ -22,8 +22,24 @@ def get_missing_json_params(json, required_params):
             missing_params.append(p)
     return missing_params
 
-@app.route('/play/game_status', methods=['GET','POST'])
-def game_status():
+@app.route('/play/game_status', methods=['GET'])
+def game_status_get():
+    missing_required_params = []
+    for p in ['game_id', 'player_name']:
+        if flask.request.args.get(p) is None:
+            missing_required_params.append(p)
+    
+    if missing_required_params:
+        return "Request was missing required URL parameters: '{0}'".format(
+            "', '".join(missing_required_params))
+
+    game_id = flask.request.args.get('game_id')
+    player_name = flask.request.args.get('player_name')
+
+    return "That was a get method.  I should do something with that."
+
+@app.route('/play/game_status', methods=['POST'])
+def game_status_post():
     json = flask.request.get_json()
     if json is None:
         return flask.jsonify(**{'error': 'Request could not be parsed as JSON.'})
@@ -88,18 +104,6 @@ def challenge():
 def send_js(path):
     return flask.send_from_directory('js', path)
 
-@app.route("/json-upload", methods=['GET','POST'])
-def json():
-    
-    #print(str(flask.request.json))
-    
-    if flask.request.json:
-        mydata = flask.request.json # will be 
-        
-        return "Thanks. Your age is %s" % mydata.get("age")
-
-    else:
-        return "no json received"
 
 @app.route("/base")
 def base_template():
