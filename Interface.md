@@ -35,19 +35,13 @@
   
   __Rules:__
      - Returns error if only 1 player has joined the game.
-<<<<<<< HEAD
-     - Client may enforce if only player 1 can call start_game
-=======
      - Client may enforce whether only player 1 can call start_game
->>>>>>> 65ff609e8214afd208ac1f8980f419071820c678
      
 
 ###roll_dice
   - IN: player_name, game_id
   - OUT: dice(), game_id, player_name
-<<<<<<< HEAD
-=======
-  
+
 __Rules:__
      - Returns error if this player has already rolled this round
 
@@ -75,6 +69,3 @@ __Rules:__
   __Rules:__
      - Returns error if not player_name's turn
      - Return is otherwise the same as game_status
-  
-
->>>>>>> 65ff609e8214afd208ac1f8980f419071820c678
