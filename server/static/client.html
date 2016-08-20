@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("button").click(function(){
+        $.get("/play/game_status?game_id=3&player_name='bob'",function(data, status){
+            $("#game_id").text = "Game ID:" + data.game_id;
+            $("#player_name").text = "Player Name:" + data.player_name;
+        },"json" );
+        
+    });
+});
+</script>
+</head>
+<body>
+
+<h2>Liar's Dice</h2>
+
+<p id='game_id'>Game ID: Undefined</p>
+<p id='player_name'>Player Name: Undefined</p>
+
+<button>Update Status</button>
+
+</body>
+</html>

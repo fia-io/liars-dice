@@ -26,7 +26,9 @@ def bid():
 def challenge():
     return 'I should totally return a challenge here.'
 
-
+@app.route('client')
+def client():
+    return url_for('static', filename='client.html')
 
 @app.route('/js/<path:path>')
 def send_js(path):
