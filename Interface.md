@@ -3,12 +3,12 @@
 ##Setup (pre-game)
 ###create
   - IN: player_count, player1_name, player2_name... playerX_name
-  - OUT: game_id, game_status, (optional) round_number
+  - OUT: game_id, game_state, (optional) round_number
   
   __Rules:__
      - Maximum X players. 
-     - game_status will be one of 'not_started', 'playing', 'ended'
-     - if game_status is 'playing', round_number will indicate the current round of the game.
+     - game_state will be one of 'not_started', 'playing', 'ended'
+     - if game_state is 'playing', round_number will indicate the current round of the game.
      - the player calling create is always player1
   
 ###game_list
@@ -21,17 +21,17 @@
 
 ###join_game
   - IN: player_name, game_id
-  - OUT: game_id, game_status, (optional) round_number
+  - OUT: game_id, game_state, (optional) round_number
   
   __Rules:__
      - Same return values as create
-     - If all players specified in create have joined the game, game_status is 'playing' and the game has begun.
+     - If all players specified in create have joined the game, game_state is 'playing' and the game has begun.
      
 ##Game Play
 
 ###start_game
   - IN: game_id
-  - OUT: game_id, game_status(='playing'), round_number(=1)
+  - OUT: game_id, game_state(='playing'), round_number(=1)
   
   __Rules:__
      - Returns error if only 1 player has joined the game.
@@ -47,7 +47,7 @@ __Rules:__
 
 ###game_status
   - IN: game_id, player_name
-  - OUT: game_id, game_status, round_number, player_turn(bool), dice(), bids()
+  - OUT: game_id, game_state, round_number, player_turn(bool), dice(), bid
   
   __Rules:__
      - player_turn returns true if it is player_name's turn, false otherwise
@@ -57,7 +57,7 @@ __Rules:__
 ###bid
   - IN: game_id, round_number, player_name, bid_count, bid_die
     - Example: {"game_id": 5, "round_number": 8, "player_name": "me", "bid_count": 3, "bid_die": 6 }
-  - OUT: game_id, game_status, round_number, player_turn(bool=false), dice(), bids()
+  - OUT: game_id, game_state, round_number, player_turn(bool=false), dice(), bid
 
 __Rules:__
      - Returns error if not player_name's turn
@@ -67,7 +67,7 @@ __Rules:__
 ###challenge
   - IN: game_id, round_number, player_name
     - Example: {"game_id": 5, "round_number": 9, "player_name": "you" }
-  - OUT: game_id, game_status, round_number, player_turn(bool=false), dice(), bids()
+  - OUT: game_id, game_state, round_number, player_turn(bool=false), dice(), bids()
   
   __Rules:__
      - Returns error if not player_name's turn
