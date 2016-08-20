@@ -1,5 +1,5 @@
 import flask
-
+from flask import url_for
 def fake_bid():
     pass
 
@@ -36,7 +36,8 @@ def game_status_get():
     game_id = flask.request.args.get('game_id')
     player_name = flask.request.args.get('player_name')
 
-    return "That was a get method.  I should do something with that."
+    response = { 'game_id': game_id, 'player_name': player_name }
+    return flask.jsonify(**response)
 
 @app.route('/play/game_status', methods=['POST'])
 def game_status_post():
@@ -54,7 +55,7 @@ def game_status_post():
     game_id = json.get('game_id')
     player_name = json.get('player_name')
 
-    response = {'status': 'I should totally return a real status.'}
+    response = { 'not implemented': 1 }
     return flask.jsonify(**response)
 
 @app.route('/play/bid', methods=['POST'])
@@ -76,7 +77,8 @@ def bid():
     bid_count = json.get('bid_count')
     bid_die = json.get('bid_die')
 
-    return 'I should totally return process the bid and return the result.'
+    response = { 'not implemented': 1 }
+    return flask.jsonify(**response)
 
 @app.route('/play/challenge', methods=['POST'])
 def challenge():
@@ -98,9 +100,9 @@ def challenge():
     response = { 'not implemented': 1 }
     return flask.jsonify(**response)
 
-@app.route('client')
+@app.route("/client")
 def client():
-    return url_for('static', filename='client.html')
+   return flask.render_template('client.html')
 
 @app.route('/js/<path:path>')
 def send_js(path):

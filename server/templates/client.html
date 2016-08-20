@@ -6,8 +6,8 @@
 $(document).ready(function(){
     $("button").click(function(){
         $.get("/play/game_status?game_id=3&player_name='bob'",function(data, status){
-            $("#game_id").text = "Game ID:" + data.game_id;
-            $("#player_name").text = "Player Name:" + data.player_name;
+            $("#game_id").text("Game ID: " + data.game_id);
+            $("#player_name").text ("Player Name: " + data.player_name);
         },"json" );
         
     });

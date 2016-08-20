@@ -27,31 +27,66 @@ class Round:
     def __init__(self, players, round_num):
         self.players = players
     
-        
     #everybody rolls dice
     def start_round(self):
+        self.turn_num = 0
+        self.current_bid = ['default',0,1]
         self.bids = []
+        self.status = 'current'
+        self.bids.append(self.current_bid)
         for player in self.players:
             player.roll_dice()
         self.current_player = self.players[0]
             
-    def take_bid(self, player, bid):
-        if player != self.current_player:
+    def take_bid(self, bid):
+        if bid[0] != self.current_player.name:
             return False
         else:
-            if (validate_bid(bid)):
-                current_bid = bid
+            if (self.validate_bid(bid)):
+                self.current_bid = bid
                 self.bids.append(bid)
-                self.current_player = self.findNextPlayer(self.current_player)
+                self.current_player = self.findNextPlayer(self.current_player.name)
                 self.turn_num += 1
                 return True
+            else: 
+                return False
     
+    #find the next player who's still in the game
+    def findNextPlayer(self, player_name):
+        x = 0
+        while self.players[x].name != player_name:
+            x += 1
+        x += 1
+        if x >= len(self.players):
+            x = 0
+        while self.players[x].num_dice == 0 and self.players[x].name != player_name:
+            x += 1
+            if x >= len(self.players):
+                x = 0
+        return self.players[x]    
+        
+            
+        
+        
     #check new bid against current bid
     #return false if bad bid
     #maybe bid contains info about which player did it?
     #if good bid, increment turn_num, return true
+    #bid format is [player name, number of dice, face number]
     def validate_bid(self, bid):
-        pass
+        if bid[2] > 6 or bid[2] < 1 or bid[1] < 1:
+            return False
+        if bid[1] < self.current_bid[1]:
+            return False
+        if bid[1] == self.current_bid[1]:
+            if bid[2] <= self.current_bid[2]:
+                return False
+            else:
+                return True
+        else:
+            return True
+            
+
     
     #check current bid against all dice
     #if bid exceeds total, decrement bidder's dice_num
@@ -60,9 +95,29 @@ class Round:
     #else decrement challenger's dice_num
     #end round, check for player-out, player-win, begin next
     #return false
-    def win_challenge(self, player):
-        pass
+    def process_challenge(self, player_name):
+        if self.current_player.name == player_name:
+            die = self.current_bid[2]
+            num = 0
+            play = 0
+            while play < len(self.players) and num < self.current_bid[1]:
+                for x in self.players[play].dice:
+                    if x == die:
+                        num += 1
+                play += 1
+            if num >= self.current_bid[1]:
+                self.punish(player_name)
+            else:
+                self.punish(self.current_bid[0])
+            self.status='ended'
+        return self.status
         
+    def punish(self, player_name):
+        x = 0
+        while (self.players[x].name != player_name):
+            x += 1
+        self.players[x].num_dice -= 1
+
             
 
 #Game contains info about players, starting dice number
@@ -77,7 +132,7 @@ class Game:
         self.round_num = 0
         self.turn_num = 0
         self.dice = []
-        self.status = 'not_started'
+        self.status = 'playing'
         
         for name in players:
             self.players.append(Player(name, self.start_dice))
@@ -91,12 +146,45 @@ class Game:
     def current_player(self):
         return self.current_round.current_player.name
         
+    def get_player_dice(self, player_name):
+        x = 0
+        while self.players[x].name != player_name:
+            x += 1
+        return self.players[x].dice
+        
     def get_bids(self):
         return self.current_round.bids
         
-    def take_bid(self, player, bid):
-        return self.current_round.take_bid(player, bid)
-
+    def take_bid(self, bid):
+        return self.current_round.take_bid(bid)
+        
+    def challenge(self, player_name):
+        if self.current_round.process_challenge(player_name) == 'ended':
+            if self.check_for_win():
+                self.status = 'ended'
+            else:
+                self.round_num += 1
+                self.start_round()
+        
+    def check_for_win(self):
+        active = 0
+        for y in self.players:
+            if y.num_dice > 0:
+                active += 1
+        if active > 1:
+            return False
+        else:
+            return True
+        
+    def game_status(self, game_id, player_name):
+        return [game_id, self.status, self.round_num, self.current_player() == player_name, self.get_player_dice(player_name), self.current_round.bids]
+        
+    def poll_dice(self):
+        d = []
+        for x in self.players:
+            for y in x.dice:
+                d.append(y)
+        return d
 
 class Engine:
     def __init__(self, random_number_generator):
@@ -112,5 +200,12 @@ class Engine:
         self._games[id] = Game(players, num_dice)
         return self._games[id]
         
-    def game_status(self, game_id):
-        return [game_id, self._games[game_id].status, self._games[game_id].round_num] 
+    def game_status(self, game_id, player_name):
+        return self._games[game_id].game_status(game_id, player_name)
+
+    def challenge(self, game_id, round_num, player_name):
+        if self._games[game_id].round_num == round_num:
+            self._games[game_id].challenge(player_name)
+        return self.game_status(game_id, player_name)
+
+            
