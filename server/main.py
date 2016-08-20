@@ -98,7 +98,9 @@ def challenge():
     response = { 'not implemented': 1 }
     return flask.jsonify(**response)
 
-
+@app.route('client')
+def client():
+    return url_for('static', filename='client.html')
 
 @app.route('/js/<path:path>')
 def send_js(path):
