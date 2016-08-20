@@ -41,7 +41,11 @@
 ###roll_dice
   - IN: player_name, game_id
   - OUT: dice(), game_id, player_name
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> efb83771ecec37be602407ec0482c2066d93f385
 __Rules:__
      - Returns error if this player has already rolled this round
 
@@ -71,5 +75,8 @@ __Rules:__
   __Rules:__
      - Returns error if not player_name's turn
      - Return is otherwise the same as game_status
+<<<<<<< HEAD
   
 
+=======
+>>>>>>> efb83771ecec37be602407ec0482c2066d93f385
