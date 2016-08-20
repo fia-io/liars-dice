@@ -65,7 +65,8 @@ __Rules:__
      - Return is otherwise the same as game_status
      
 ###challenge
-  - IN: game_id, challenger_name, challengee_name
+  - IN: game_id, round_number, player_name
+    - Example: {"game_id": 5, "round_number": 9, "player_name": "you" }
   - OUT: game_id, game_status, round_number, player_turn(bool=false), dice(), bids()
   
   __Rules:__
