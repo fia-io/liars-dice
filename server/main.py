@@ -5,10 +5,23 @@ app = flask.Flask(__name__)
 @app.route("/")
 def hello():
     return "Hello World!"
-    
+
 @app.route('/js/<path:path>')
 def send_js(path):
     return flask.send_from_directory('js', path)
+
+@app.route("/json-upload", methods=['GET','POST'])
+def json():
+    
+    #print(str(flask.request.json))
+    
+    if flask.request.json:
+        mydata = flask.request.json # will be 
+        
+        return "Thanks. Your age is %s" % mydata.get("age")
+
+    else:
+        return "no json received"
 
 @app.route("/base")
 def base_template():
