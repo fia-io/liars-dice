@@ -4,24 +4,41 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
-    $("button").click(function(){
-        $.get("/play/game_status?game_id=3&player_name='bob'",function(data, status){
-            $("#game_id").text("Game ID: " + data.game_id);
-            $("#player_name").text ("Player Name: " + data.player_name);
+    $("#status").click(function(){
+        $.get("/play/game_status?game_id=3&player_name='" + name + "'",function(data, status){
+            updateStatus(data);
+        },"json" );
+        
+    });
+    
+    $("#start").click(function(){
+        var name = $("#player_name_input").text();
+        $.get("/play/game_status?game_id=3&player_name='" + name + "'",function(data, status){
+            updateStatus(data);
+            $("#start").hide();
+            $("#player_name_input").hide();
         },"json" );
         
     });
 });
+
+function updateStatus( data ) {
+    $("#game_id").text("Game ID: " + data.game_id);
+    $("#player_name").text ("Player Name: " + data.player_name);
+}
+
 </script>
 </head>
 <body>
 
 <h2>Liar's Dice</h2>
-
+Player Name: <input id='player_name_input' type='text' >
+<button id='start'>Start Game</button>
+<hr>
 <p id='game_id'>Game ID: Undefined</p>
 <p id='player_name'>Player Name: Undefined</p>
 
-<button>Update Status</button>
+<button id='status'>Update Status</button>
 
 </body>
 </html>
