@@ -5,6 +5,7 @@ class Player:
         self.name = name
         self.dice = dice
 
+
 class Game:
     def __init__(self, players, num_dice):
         self.players = []
@@ -13,13 +14,15 @@ class Game:
 
 
 class Engine:
-    def __init__(self):
-        self._next_id = 1
+    def __init__(self, random_number_generator):
         self._games = {}
+        self._next_id = 1
+        self._rng = random_number_generator
 
     def create_game(self, players, num_dice):
         id = self._next_id
         self._next_id += 1
+
         
         self._games[id] = Game(players, num_dice)
         return self._games[id]
