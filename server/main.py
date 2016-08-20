@@ -1,30 +1,86 @@
 import flask
 
+def fake_bid():
+    pass
+
+def fake_challenge():
+    pass
+
+def fake_get_status():
+    pass
+
 app = flask.Flask(__name__)
 
 @app.route("/")
 def hello():
     return "Hello World!"
 
+def get_missing_json_params(json, required_params):
+    missing_params = []
+    for p in required_params:
+        if json.get(p) is None:
+            missing_params.append(p)
+    return missing_params
+
 @app.route('/play/game_status', methods=['GET','POST'])
 def game_status():
-    response = {}
-    print(str(flask.request.json))
-    print(str(flask.request.get_json()))
-    if flask.request.json:
-        request_data = flask.request.json
-        response['game_id'] = request_data.get('game_id')
+    json = flask.request.get_json()
+    if json is None:
+        return flask.jsonify(**{'error': 'Request could not be parsed as JSON.'})
 
-    print(str(response))
+    missing_required_params = get_missing_json_params(
+        json, ['game_id', 'player_name'])
+    if missing_required_params:
+        return flask.jsonify(**{
+            'error': "Request was missing required JSON fields: '{0}'".format(
+                "', '".join(missing_required_params))})
+    
+    game_id = json.get('game_id')
+    player_name = json.get('player_name')
+
+    response = {'status': 'I should totally return a real status.'}
     return flask.jsonify(**response)
 
 @app.route('/play/bid', methods=['POST'])
 def bid():
-    return 'I should totally return a bid here.'
+    json = flask.request.get_json()
+    if json is None:
+        return flask.jsonify(**{'error': 'Request could not be parsed as JSON.'})
+
+    missing_required_params = get_missing_json_params(
+        json, ['game_id', 'round_number', 'player_name', 'bid_count', 'bid_die'])
+    if missing_required_params:
+        return flask.jsonify(**{
+            'error': "Request was missing required JSON fields: '{0}'".format(
+                "', '".join(missing_required_params))})
+    
+    game_id = json.get('game_id')
+    round_number = json.get('round_number')
+    player_name = json.get('player_name')
+    bid_count = json.get('bid_count')
+    bid_die = json.get('bid_die')
+
+    return 'I should totally return process the bid and return the result.'
 
 @app.route('/play/challenge', methods=['POST'])
 def challenge():
-    return 'I should totally return a challenge here.'
+    json = flask.request.get_json()
+    if json is None:
+        return flask.jsonify(**{'error': 'Request could not be parsed as JSON.'})
+
+    missing_required_params = get_missing_json_params(
+        json, ['game_id', 'round_number', 'player_name'])
+    if missing_required_params:
+        return flask.jsonify(**{
+            'error': "Request was missing required JSON fields: '{0}'".format(
+                "', '".join(missing_required_params))})
+
+    game_id = json.get('game_id')
+    round_number = json.get('round_number')
+    player_name = json.get('player_name')
+
+    response = { 'not implemented': 1 }
+    return flask.jsonify(**response)
 
 
 
