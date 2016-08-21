@@ -98,8 +98,8 @@ def bid():
     bid_count = json.get('bid_count')
     bid_die = json.get('bid_die')
 
-    #response = { 'game_id' : game_id, 'round_number': round_number, 'player_name' : player_name, 'bid_count' : bid_count, 'bid_die' : bid_die};
-    response = { 'game_id': game_id, 'player_name': player_name }
+    status = e.bid(int(game_id), int(round_number), (player_name, int(bid_count), int(bid_die)))
+    response = parse_status(status)
     return flask.jsonify(**response)
 
 @app.route('/play/challenge', methods=['POST'])
@@ -119,8 +119,8 @@ def challenge():
     round_number = json.get('round_number')
     player_name = json.get('player_name')
 
-    #response = { 'game_id' : game_id, 'round_number' : round_number, 'player_name' : player_name };
-    response = { 'game_id': game_id, 'player_name': player_name }
+    status = e.challenge(int(game_id), int(round_number), player_name)
+    response = parse_status(status)
     return flask.jsonify(**response)
 
 @app.route("/client")

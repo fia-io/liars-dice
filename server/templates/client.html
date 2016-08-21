@@ -26,7 +26,7 @@ $(document).ready(function(){
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify( {
-                "game_id" : 1 , 
+                "game_id" : $("#game_id_data").val(), 
                 "round_number" : $("#round_num_data").val(),
                 "player_name" :$("#player_name_input").val(),
                 "bid_count" : $("#bid_count").val(),
@@ -39,7 +39,7 @@ $(document).ready(function(){
         });
        
     });
-     //$("#game_id_data").val(),
+     
      $("#challenge").click(function(){
         $.ajax({
             url: "/play/challenge",
@@ -70,7 +70,7 @@ function updateStatus( data ) {
     $("#player_turn").text ("My Turn? " + data.player_turn);
     $("#dice").text ("My Dice: " + data.dice);
  
-    $("#bid").text ("Last Bid: " + data.bid);
+    $("#last_bid").text ("Last Bid: " + data.bid);
 }
 
 </script>
@@ -90,7 +90,7 @@ Player Name: <input id='player_name_input' type='text' >
 <p id='round_number'>Round Number: --</p>
 <p id='player_turn'>My Turn? --</p>
 <p id='dice'>My Dice: -- </p>
-<p id='bid'>Last Bid: -- </p>
+<p id='last_bid'>Last Bid: -- </p>
 
 <button id='status'>Update Status</button>
 <hr>

@@ -47,17 +47,15 @@ class Round:
         self.current_player = self.players[0]
             
     def take_bid(self, bid):
-        if bid[0] != self.current_player.name:
-            return False
-        else:
+        if bid[0] == self.current_player.name:
             if (self.validate_bid(bid)):
                 self.current_bid = bid
                 self.bids.append(bid)
                 self.current_player = self.findNextPlayer(self.current_player.name)
                 self.turn_num += 1
-                return True
-            else: 
-                return False
+#                return True
+#            else: 
+#                return False
     
     #find the next player who's still in the game
     def findNextPlayer(self, player_name):
@@ -178,7 +176,7 @@ class Game:
         return self.current_round.bids
         
     def take_bid(self, bid):
-        return self.current_round.take_bid(bid)
+        self.current_round.take_bid(bid)
         
     def challenge(self, player_name):
         if self.current_round.process_challenge(player_name) == 'ended':
@@ -234,10 +232,12 @@ class Engine:
         return self._games[game_id].get_bids()
         
     def bid(self, game_id, round_num, bid):
-        if self._games[game_id].round_num != round_num:
-            return False
-        else:
-            return self._games[game_id].take_bid(bid)
+        self._games[game_id].take_bid(bid)
+        return self.game_status(game_id, bid[0])
+        #if self._games[game_id].round_num != round_num:
+        #    return False
+        #else:
+        #    return self._games[game_id].take_bid(bid)
             
     def set_dice(self, game_id, round_num, player, dice):
         if self._games[game_id].round_num == round_num:
