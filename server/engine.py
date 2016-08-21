@@ -155,10 +155,10 @@ class Game:
         self.turn_num = 0
         self.dice = []
         self.status = 'playing'
-        
         for name in players:
             self.players.append(Player(name, self.start_dice))
         self.current_bid = []
+        self.start_round()
         
     #okay, this is a bit redundant right now
     def start_round(self):

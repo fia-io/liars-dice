@@ -1,13 +1,14 @@
 import flask
-from flask import url_for
-def fake_bid():
-    pass
+import engine
 
-def fake_challenge():
-    pass
+# HACK: Create a single game in th engine with known players and known dice
+e = engine.Engine(None)
+e.create_game(['me', 'you'], 3)
+e.set_dice(1, 0, 'me', [5, 5, 6])
+e.set_dice(1, 0, 'you', [3, 3, 4])
+print(e.game_status(1, 'me'))
+print(e.game_status(1, 'you'))
 
-def fake_get_status():
-    pass
 
 app = flask.Flask(__name__)
 
@@ -21,6 +22,24 @@ def get_missing_json_params(json, required_params):
         if json.get(p) is None:
             missing_params.append(p)
     return missing_params
+
+def parse_status(status):
+    gi, gs, rn, pt, d, b = status
+    
+    bidder, num_dice, die_face = b[-1]
+    
+    bid_string = "{0} x {1}'s".format(num_dice, die_face)
+
+    response = {
+        'game_id': gi,
+        'game_state': gs,
+        'round_number': rn,
+        'player_turn': pt,
+        'dice': d,
+        'bid': bid_string
+    }
+    
+    return response
 
 @app.route('/play/game_status', methods=['GET'])
 def game_status_get():
@@ -36,11 +55,24 @@ def game_status_get():
     game_id = flask.request.args.get('game_id')
     player_name = flask.request.args.get('player_name')
 
-    response = {
-        'game_id': game_id,
-        'game_status': 'playing',
-        'round_number': 3,
-        'player_name': player_name }
+    status = e.game_status(int(game_id), player_name)
+
+    #gi, gs, rn, pt, d, b = status
+    
+    #bidder, num_dice, die_face = b[-1]
+    
+    #bid_string = "{0} x {1}'s".format(num_dice, die_face)
+
+    #response = {
+    #    'game_id': gi,
+    #    'game_state': gs,
+    #    'round_number': rn,
+    #    'player_turn': pt,
+    #    'dice': d,
+    #    'bid': bid_string
+    #}
+    
+    response = parse_status(status)
     return flask.jsonify(**response)
 
 @app.route('/play/game_status', methods=['POST'])
@@ -59,7 +91,7 @@ def game_status_post():
     game_id = json.get('game_id')
     player_name = json.get('player_name')
 
-    response = { 'not implemented': 1 }
+    response = parse_status(e.game_status(int(game_id), player_name))
     return flask.jsonify(**response)
 
 @app.route('/play/bid', methods=['POST'])
