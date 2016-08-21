@@ -57,21 +57,6 @@ def game_status_get():
 
     status = e.game_status(int(game_id), player_name)
 
-    #gi, gs, rn, pt, d, b = status
-    
-    #bidder, num_dice, die_face = b[-1]
-    
-    #bid_string = "{0} x {1}'s".format(num_dice, die_face)
-
-    #response = {
-    #    'game_id': gi,
-    #    'game_state': gs,
-    #    'round_number': rn,
-    #    'player_turn': pt,
-    #    'dice': d,
-    #    'bid': bid_string
-    #}
-    
     response = parse_status(status)
     return flask.jsonify(**response)
 

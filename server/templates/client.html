@@ -5,7 +5,7 @@
 <script>
 $(document).ready(function(){
     $("#start").click(function(){
-        $.get("/play/game_status?game_id=" + $("#game_id_data").val() + "&player_name='" + $("#player_name_input").val() + "'",function(data, status){
+        $.get("/play/game_status?game_id=" + $("#game_id_data").val() + "&player_name=" + $("#player_name_input").val() ,function(data, status){
             updateStatus(data);
             $("#start").hide();
             $("#player_name_input").hide();
@@ -14,7 +14,7 @@ $(document).ready(function(){
     });
     
     $("#status").click(function(){
-        $.get("/play/game_status?game_id=" + $("#game_id_data").val() + "&player_name='" +  $("#player_name_input").val() + "'",function(data, status){
+        $.get("/play/game_status?game_id=" + $("#game_id_data").val() + "&player_name=" +  $("#player_name_input").val() ,function(data, status){
             updateStatus(data);
         },"json" );
         
@@ -23,25 +23,23 @@ $(document).ready(function(){
      $("#bid").click(function(){
         $.ajax({
             url: "/play/bid",
-            dataType: 'json',
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify( {
-                "game_id" : $("#game_id_data").val(),
+                "game_id" : 1 , 
                 "round_number" : $("#round_num_data").val(),
                 "player_name" :$("#player_name_input").val(),
                 "bid_count" : $("#bid_count").val(),
                 "bid_die" : $("#bid_die").val()
             } ),
-            processData: false,
+            dataType: 'json',
             success: function(data, status){
                 updateStatus(data);
             }
-            
         });
-        
+       
     });
-    
+     //$("#game_id_data").val(),
      $("#challenge").click(function(){
         $.ajax({
             url: "/play/challenge",
@@ -65,12 +63,13 @@ $(document).ready(function(){
 function updateStatus( data ) {
     $("#game_id").text("Game ID: " + data.game_id);
     $("#game_id_data").val(data.game_id);
-    $("#player_name").text ("Player Name: " + data.player_name);
+    $("#player_name").text ("Player Name: " + $("#player_name_input").val() );
     $("#game_state").text ("Game State: " + data.game_state);
     $("#round_number").text ("Round Number: " + data.round_number);
     $("#round_num_data").val(data.round_number);
     $("#player_turn").text ("My Turn? " + data.player_turn);
     $("#dice").text ("My Dice: " + data.dice);
+ 
     $("#bid").text ("Last Bid: " + data.bid);
 }
 
@@ -94,7 +93,6 @@ Player Name: <input id='player_name_input' type='text' >
 <p id='bid'>Last Bid: -- </p>
 
 <button id='status'>Update Status</button>
-
 <hr>
 Bid Die: <select  id=bid_die>
     <option value=1>1</option>
