@@ -36,7 +36,11 @@ def game_status_get():
     game_id = flask.request.args.get('game_id')
     player_name = flask.request.args.get('player_name')
 
-    response = { 'game_id': game_id, 'player_name': player_name }
+    response = {
+        'game_id': game_id,
+        'game_status': 'playing',
+        'round_number': 3,
+        'player_name': player_name }
     return flask.jsonify(**response)
 
 @app.route('/play/game_status', methods=['POST'])
@@ -77,7 +81,8 @@ def bid():
     bid_count = json.get('bid_count')
     bid_die = json.get('bid_die')
 
-    response = { 'not implemented': 1 }
+    #response = { 'game_id' : game_id, 'round_number': round_number, 'player_name' : player_name, 'bid_count' : bid_count, 'bid_die' : bid_die};
+    response = { 'game_id': game_id, 'player_name': player_name }
     return flask.jsonify(**response)
 
 @app.route('/play/challenge', methods=['POST'])
@@ -97,7 +102,8 @@ def challenge():
     round_number = json.get('round_number')
     player_name = json.get('player_name')
 
-    response = { 'not implemented': 1 }
+    #response = { 'game_id' : game_id, 'round_number' : round_number, 'player_name' : player_name };
+    response = { 'game_id': game_id, 'player_name': player_name }
     return flask.jsonify(**response)
 
 @app.route("/client")
@@ -112,11 +118,6 @@ def send_js(path):
 @app.route("/base")
 def base_template():
     return flask.render_template('base.html')
-
-@app.route("/json_test")
-def json_test():
-    d = {'a': 4, 'b': 9}
-    return flask.jsonify(**d)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)

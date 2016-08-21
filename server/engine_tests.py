@@ -28,16 +28,37 @@ class TestRound(unittest.TestCase):
         round.process_challenge('me')
         self.assertEqual('you', round.get_current_player())
 
-    def test_challenge_bid(self):
+    def test_challenge_correct_bid(self):
         me = engine.Player('me', 2)
         you = engine.Player('you', 1)
         round = engine.Round([me, you])
+        
+        me.set_dice([1, 1])
+        you.set_dice([1])
+        
         self.assertEqual('me', round.get_current_player())
-        round.take_bid(('me', 1, 2))
+        round.take_bid(('me', 3, 1))
         self.assertEqual('you', round.get_current_player())
         round.process_challenge('you')
-        #self.assertEqual(2, me.num_dice)
-        #self.assertEqual(0, you.num_dice)
+        
+        self.assertEqual(2, me.num_dice)
+        self.assertEqual(0, you.num_dice)
+
+    def test_challenge_incorrect_bid(self):
+        me = engine.Player('me', 2)
+        you = engine.Player('you', 1)
+        round = engine.Round([me, you])
+        
+        me.set_dice([1, 1])
+        you.set_dice([2])
+        
+        self.assertEqual('me', round.get_current_player())
+        round.take_bid(('me', 3, 1))
+        self.assertEqual('you', round.get_current_player())
+        round.process_challenge('you')
+        
+        self.assertEqual(1, me.num_dice)
+        self.assertEqual(1, you.num_dice)
 
 
 class TestEngine(unittest.TestCase):

@@ -4,27 +4,74 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
-    $("#status").click(function(){
-        $.get("/play/game_status?game_id=3&player_name='" + name + "'",function(data, status){
-            updateStatus(data);
-        },"json" );
-        
-    });
-    
     $("#start").click(function(){
-        var name = $("#player_name_input").text();
-        $.get("/play/game_status?game_id=3&player_name='" + name + "'",function(data, status){
+        $.get("/play/game_status?game_id=" + $("#game_id_data").val() + "&player_name='" + $("#player_name_input").val() + "'",function(data, status){
             updateStatus(data);
             $("#start").hide();
             $("#player_name_input").hide();
         },"json" );
         
     });
+    
+    $("#status").click(function(){
+        $.get("/play/game_status?game_id=" + $("#game_id_data").val() + "&player_name='" +  $("#player_name_input").val() + "'",function(data, status){
+            updateStatus(data);
+        },"json" );
+        
+    });
+    
+     $("#bid").click(function(){
+        $.ajax({
+            url: "/play/bid",
+            dataType: 'json',
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify( {
+                "game_id" : $("#game_id_data").val(),
+                "round_number" : $("#round_num_data").val(),
+                "player_name" :$("#player_name_input").val(),
+                "bid_count" : $("#bid_count").val(),
+                "bid_die" : $("#bid_die").val()
+            } ),
+            processData: false,
+            success: function(data, status){
+                updateStatus(data);
+            }
+            
+        });
+        
+    });
+    
+     $("#challenge").click(function(){
+        $.ajax({
+            url: "/play/challenge",
+            dataType: 'json',
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify( {
+                "game_id" : $("#game_id_data").val(),
+                "round_number" : $("#round_num_data").val(),
+                "player_name" : $("#player_name_input").val()
+            } ),
+            processData: false,
+            success: function(data, status){
+                updateStatus(data);
+            }
+            
+        });
+    });
 });
 
 function updateStatus( data ) {
     $("#game_id").text("Game ID: " + data.game_id);
+    $("#game_id_data").val(data.game_id);
     $("#player_name").text ("Player Name: " + data.player_name);
+    $("#game_state").text ("Game State: " + data.game_state);
+    $("#round_number").text ("Round Number: " + data.round_number);
+    $("#round_num_data").val(data.round_number);
+    $("#player_turn").text ("My Turn? " + data.player_turn);
+    $("#dice").text ("My Dice: " + data.dice);
+    $("#bid").text ("Last Bid: " + data.bid);
 }
 
 </script>
@@ -33,12 +80,35 @@ function updateStatus( data ) {
 
 <h2>Liar's Dice</h2>
 Player Name: <input id='player_name_input' type='text' >
+<input type='hidden' id='game_id_data' value=1>
+<input type='hidden' id='round_num_data' value=0>
 <button id='start'>Start Game</button>
 <hr>
-<p id='game_id'>Game ID: Undefined</p>
-<p id='player_name'>Player Name: Undefined</p>
+<h3> Status </h3>
+<p id='game_id'>Game ID: Not Started</p>
+<p id='player_name'>Player Name: Not Started</p>
+<p id='game_state'>Game State: --</p>
+<p id='round_number'>Round Number: --</p>
+<p id='player_turn'>My Turn? --</p>
+<p id='dice'>My Dice: -- </p>
+<p id='bid'>Last Bid: -- </p>
 
 <button id='status'>Update Status</button>
+
+<hr>
+Bid Die: <select  id=bid_die>
+    <option value=1>1</option>
+    <option value=2>2</option>
+    <option value=3>3</option>
+    <option value=4>4</option>
+    <option value=5>5</option>
+    <option value=6>6</option>
+</select>    
+
+Bid Count: <input type='text' id='bid_count'>
+<button id='bid'>Bid</button>
+<hr>
+<button id='challenge'>Challenge</button>
 
 </body>
 </html>
